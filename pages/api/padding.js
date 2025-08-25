@@ -1,4 +1,9 @@
 export default function handler(req, res) {
+  res.setHeader("Access-Control-Allow-Origin", "*"); // or "https://app.storyblok.com"
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+
   // Tailwind's default padding scale
   const padding = {
     'p-0': '0px',
@@ -36,9 +41,16 @@ export default function handler(req, res) {
     'p-80': '320px',
     'p-96': '384px',
   };
-  const options = Object.entries(padding).map(([key, value]) => ({
+
+  const data = Object.entries(padding).map(([key, value]) => ({
     value: key,
     name: `${key} (${value})`
   }));
-  res.status(200).json(options);
+
+  if (req.method === "OPTIONS") {
+    res.status(204).end();
+    return;
+  }
+
+  res.status(200).json(data);
 }
